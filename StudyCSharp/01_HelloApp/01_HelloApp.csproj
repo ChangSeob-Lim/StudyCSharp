@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E28AC063-2F0E-435E-A22E-DEBC1B59EADF}</ProjectGuid>
+    <ProjectGuid>{47E29DF6-187F-43A2-8346-12338972E0A5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>HelloApp</RootNamespace>
-    <AssemblyName>HelloApp</AssemblyName>
+    <RootNamespace>_01_HelloApp</RootNamespace>
+    <AssemblyName>01_HelloApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
