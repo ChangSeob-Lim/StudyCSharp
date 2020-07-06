@@ -30,8 +30,7 @@ namespace _05_StringNumberConverion
 
             //문자형 -> 실수형or정수형 변환 오류
             string i = "123456*";
-            int j = 0;
-            bool result = int.TryParse(i, out j);
+            bool result = int.TryParse(i, out int j);
             Console.WriteLine($"result = {result}");
             //실 사용예 int -> TryParse
             if (int.TryParse(i, out j))
@@ -40,8 +39,7 @@ namespace _05_StringNumberConverion
             }
             //실 사용예 float -> TryParse
             string k = "3:141592";
-            float l;
-            if (float.TryParse(k, out l))
+            if (float.TryParse(k, out float l))
             {
                 Console.WriteLine($"k = {k}");
             }
