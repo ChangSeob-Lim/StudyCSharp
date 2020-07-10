@@ -17,15 +17,30 @@ namespace _51_EventWinForm
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    MessageBox.Show("ClickEvent occurred");
+        //    return;
+        //}
+
+        private void Form1_Load(object sender, EventArgs e)
         {
-            button1.Click += Button1_Click;
-            //MessageBox.Show("EventHandler maden!");
+            button1.Click += Button1Click;
+            textBox1.KeyPress += TextBox_KeyPress;
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            MessageBox.Show("EventHandler maden!");
+            if (e.KeyChar == 13) // CR = Enterkey
+            {
+                textBox2.Focus();
+            }
+        }
+
+        private void Button1Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("ClickEvent occurred");
+            return;
         }
     }
 }
