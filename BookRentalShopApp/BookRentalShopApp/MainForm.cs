@@ -8,10 +8,22 @@ namespace BookRentalShopApp
 {
     public partial class MainForm : MetroForm
     {
+        #region 멤버변수 영역
+
+
+
+        #endregion
+
+        #region 생성자 영역
+
         public MainForm()
         {
             InitializeComponent();
         }
+
+        #endregion
+
+        #region 이벤트 핸들러 영역
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
@@ -39,7 +51,7 @@ namespace BookRentalShopApp
             DivMngForm div = new DivMngForm();
             string title = "구분코드 관리";
             ShowFormControl(div, title);
-            
+
             /*div.MdiParent = this;
             div.Text = "구분코드 관리";
             //div.Dock = DockStyle.Fill;
@@ -59,10 +71,32 @@ namespace BookRentalShopApp
             books.WindowState = FormWindowState.Maximized;*/
         }
 
+        private void MnuItemMemberMng_Click(object sender, EventArgs e)
+        {
+            MemberMngForm member = new MemberMngForm();
+            string title = "회원 관리";
+            ShowFormControl(member, title);
+        }
+
+        private void MnuItemRentalMng_Click(object sender, EventArgs e)
+        {
+            RentalMngForm rental = new RentalMngForm();
+            ShowFormControl(rental, "대여 관리");
+        }
+
+        private void MnuItemUserMng_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void MnuItemExit_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);
         }
+
+        #endregion
+
+        #region 사용자 함수 영역
 
         private void ShowFormControl(Form form, string title)
         {
@@ -71,5 +105,7 @@ namespace BookRentalShopApp
             form.Show();
             form.WindowState = FormWindowState.Maximized;
         }
+
+        #endregion
     }
 }

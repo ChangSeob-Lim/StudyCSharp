@@ -165,6 +165,7 @@ namespace BookRentalShopApp.SubForms
         {
             TxtDivision.ReadOnly = true;
             SaveData();
+            InitControls();
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)

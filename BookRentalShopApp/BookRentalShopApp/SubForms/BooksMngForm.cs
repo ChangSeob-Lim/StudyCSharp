@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,12 +24,11 @@ namespace BookRentalShopApp.SubForms
         public BooksMngForm()
         {
             InitializeComponent();
+            TxtIdx.ReadOnly = true;
         }
 
         private void DivMngForm_Load(object sender, EventArgs e)
         {
-            InitControls();
-
             UpdateData();
 
             using (MySqlConnection conn = new MySqlConnection(Commons.CONNSTR))
@@ -51,6 +51,8 @@ namespace BookRentalShopApp.SubForms
                 CboDivision.ValueMember = "Value";
                 //CboDivision.SelectedIndex = -1;
             }
+
+            InitControls();
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace BookRentalShopApp.SubForms
         {
             using (MySqlConnection conn = new MySqlConnection(Commons.CONNSTR))
             {
-                string strQuery = $"SELECT b.Idx, " +
+                string strQuery = $"SELECT   b.Idx, " +
                                    "         b.Author, " +
                                    "         b.Division," +
                                    "         d.Names As DivisionName, " +
@@ -70,7 +72,8 @@ namespace BookRentalShopApp.SubForms
                                    "         b.Price " +
                                    "     FROM bookstbl AS b " +
                                    "     INNER JOIN divtbl AS d " +
-                                   "     ON b.Division = d.Division ";
+                                   "     ON b.Division = d.Division " + 
+                                   " ORDER BY b.Idx ASC"; // 정렬추가 200716 12:11
 
                 conn.Open();
                 MySqlDataAdapter adapter = new MySqlDataAdapter(strQuery, conn);
@@ -124,8 +127,6 @@ namespace BookRentalShopApp.SubForms
         {
             InitControls();
 
-            TxtIdx.ReadOnly = false;
-
             myMode = BtnMode.INSERT; // 신규입력 모드
 
             TxtAuthor.Focus();
@@ -136,8 +137,11 @@ namespace BookRentalShopApp.SubForms
         /// </summary>
         private void SaveData()
         {
-            if (string.IsNullOrEmpty(TxtIdx.Text) ||
-                string.IsNullOrEmpty(TxtAuthor.Text))
+            // 빈값비교 NULL 체크
+            if (string.IsNullOrEmpty(TxtAuthor.Text) ||
+                CboDivision.SelectedIndex < 1 ||
+                string.IsNullOrEmpty(TxtNames.Text) ||
+                string.IsNullOrEmpty(TxtISBN.Text))
             {
                 MetroMessageBox.Show(this, "값을 입력해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -159,31 +163,79 @@ namespace BookRentalShopApp.SubForms
 
                     if (myMode == BtnMode.UPDATE)
                     {
-                        cmd.CommandText = "UPDATE divtbl " +
-                                          "   SET Names = @Names " +
-                                          " WHERE Division = @Division ";
+                        cmd.CommandText = "UPDATE bookstbl " +
+                                          "   SET Author      = @Author, " +
+                                          "       Division    = @Division, " +
+                                          "       Names       = @Names, " +
+                                          "       ReleaseDate = @ReleaseDate, " +
+                                          "       ISBN        = @ISBN, " +
+                                          "       Price       = @Price " +
+                                          " WHERE Idx = @Idx";
                     }
                     else if (myMode == BtnMode.INSERT)
                     {
-                        cmd.CommandText = "INSERT INTO divtbl (Division, Names) " +
-                                          "VALUES (@Division, @Names)";
-                    }
-                    else if (myMode == BtnMode.DELETE)
-                    {
-                        cmd.CommandText = "DELETE FROM divtbl" +
-                                      " WHERE Division = @Division ";
+                        cmd.CommandText = "INSERT INTO bookstbl " +
+                                          "(    Author, " +
+                                          "     Division, " +
+                                          "     Names, " +
+                                          "     ReleaseDate, " +
+                                          "     ISBN, " +
+                                          "     Price) " +
+                                          "VALUES " +
+                                          "     (@Author, " +
+                                          "     @Division, " +
+                                          "     @Names, " +
+                                          "     @ReleaseDate, " +
+                                          "     @ISBN, " +
+                                          "     @Price)";
                     }
 
-                    if (myMode == BtnMode.INSERT || myMode == BtnMode.UPDATE)
+                    // 저자명
+                    MySqlParameter paramAuthor = new MySqlParameter("@Author", MySqlDbType.VarChar, 45)
                     {
-                        MySqlParameter paramNames = new MySqlParameter("@Names", MySqlDbType.VarChar, 45);
-                        paramNames.Value = TxtAuthor.Text.Trim();
-                        cmd.Parameters.Add(paramNames);
-                    }
-
-                    MySqlParameter paramDivision = new MySqlParameter("@Division", MySqlDbType.VarChar);
-                    paramDivision.Value = TxtIdx.Text.Trim();
+                        Value = TxtAuthor.Text.Trim()
+                    };
+                    cmd.Parameters.Add(paramAuthor);
+                    // 장르
+                    MySqlParameter paramDivision = new MySqlParameter("@Division", MySqlDbType.VarChar, 4)
+                    {
+                        Value = CboDivision.SelectedValue // B001, B002;
+                    };
                     cmd.Parameters.Add(paramDivision);
+                    // 책이름
+                    MySqlParameter paramNames = new MySqlParameter("@Names", MySqlDbType.VarChar, 100)
+                    {
+                        Value = TxtNames.Text.Trim()
+                    };
+                    cmd.Parameters.Add(paramNames);
+                    // 출간일
+                    MySqlParameter paramReleaseDate = new MySqlParameter("@ReleaseDate", MySqlDbType.Date)
+                    {
+                        Value = DtpReleaseDate.Value
+                    };
+                    cmd.Parameters.Add(paramReleaseDate);
+                    // ISBN
+                    MySqlParameter paramISBN = new MySqlParameter("@ISBN", MySqlDbType.VarChar, 13)
+                    {
+                        Value = TxtISBN.Text.Trim()
+                    };
+                    cmd.Parameters.Add(paramISBN);
+                    // 가격
+                    MySqlParameter paramPrice = new MySqlParameter("@Price", MySqlDbType.Decimal)
+                    {
+                        Value = TxtPrice.Text.Trim()
+                    };
+                    cmd.Parameters.Add(paramPrice);
+
+                    if (myMode == BtnMode.UPDATE)
+                    {
+                        // Idx : PK, AI
+                        MySqlParameter paramIdx = new MySqlParameter("@Idx", MySqlDbType.Int32)
+                        {
+                            Value = TxtIdx.Text.Trim()
+                        };
+                        cmd.Parameters.Add(paramIdx);
+                    }
 
                     var result = cmd.ExecuteNonQuery();
 
@@ -194,12 +246,7 @@ namespace BookRentalShopApp.SubForms
                     }
                     else if(myMode == BtnMode.UPDATE)
                     {
-                        MetroMessageBox.Show(this, $"구분코드 {TxtIdx.Text.Trim()}가 {TxtAuthor.Text.Trim()}로 수정되었습니다.", "항목 수정");
-                    }
-                    else if (myMode == BtnMode.DELETE)
-                    {
-                        MetroMessageBox.Show(this, $"구분코드 {TxtIdx.Text.Trim()}가 삭제되었습니다.", "삭제");
-                        myMode = BtnMode.NONE;
+                        MetroMessageBox.Show(this, $"일련번호 {TxtIdx.Text.Trim()}인 {TxtNames.Text.Trim()}이 수정되었습니다.", "항목 수정");
                     }
                 }
             }
@@ -217,6 +264,7 @@ namespace BookRentalShopApp.SubForms
         {
             TxtIdx.ReadOnly = true;
             SaveData();
+            InitControls();
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
@@ -239,6 +287,12 @@ namespace BookRentalShopApp.SubForms
         {
             TxtIdx.Text = string.Empty;
             TxtAuthor.Text = string.Empty;
+            TxtISBN.Text = TxtNames.Text = TxtPrice.Text = string.Empty;
+            CboDivision.SelectedIndex = 0;
+
+            DtpReleaseDate.CustomFormat = "yyyy-MM-dd";
+            DtpReleaseDate.Format = DateTimePickerFormat.Custom;
+            DtpReleaseDate.Value = DateTime.Now;
 
             #region 콤보박스 연습
             // 콤보박스 데이터바인딩
@@ -259,9 +313,7 @@ namespace BookRentalShopApp.SubForms
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            TxtIdx.Text = string.Empty;
-            TxtAuthor.Text = string.Empty;
-            TxtIdx.ReadOnly = false;
+            InitControls();
 
             myMode = BtnMode.NONE; // 모드 초기화
 
@@ -274,21 +326,28 @@ namespace BookRentalShopApp.SubForms
             {
                 DataGridViewRow data = GrdBooksTbl.Rows[e.RowIndex];
 
+                // TODO : 클릭시 입력컨트롤에 데이터 할당
                 TxtIdx.Text = data.Cells[0].Value.ToString();
                 TxtAuthor.Text = data.Cells[1].Value.ToString();
-                TxtIdx.ReadOnly = true;
+
+                // 로맨스, 추리 등 디스플레이 되는 글자로 인덱스 찾기
+                //CboDivision.SelectedIndex = CboDivision.FindString(data.Cells[3].Value.ToString());
+
+                // 코드값 그대로 할당 B001, B002 등
+                CboDivision.SelectedValue = data.Cells[2].Value;
+
+
+                TxtNames.Text = data.Cells[4].Value.ToString();
+
+                DtpReleaseDate.CustomFormat = "yyyy-MM-dd";
+                DtpReleaseDate.Format = DateTimePickerFormat.Custom;
+                DtpReleaseDate.Value = DateTime.Parse(data.Cells[5].Value.ToString());
+
+                TxtISBN.Text = data.Cells[6].Value.ToString();
+                TxtPrice.Text = data.Cells[7].Value.ToString();
 
                 myMode = BtnMode.UPDATE; // 수정모드로 변경
-
-                TxtAuthor.Focus();
-            }
-        }
-
-        private void CboDivision_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (CboDivision.SelectedIndex > 0)
-            {
-                MessageBox.Show(CboDivision.SelectedValue.ToString());
+                TxtIdx.ReadOnly = true;
             }
         }
     }

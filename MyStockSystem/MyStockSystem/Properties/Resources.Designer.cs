@@ -133,6 +133,16 @@ namespace MyStockSystem.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap seagull2 {
+            get {
+                object obj = ResourceManager.GetObject("seagull2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap simulator {
             get {
                 object obj = ResourceManager.GetObject("simulator", resourceCulture);

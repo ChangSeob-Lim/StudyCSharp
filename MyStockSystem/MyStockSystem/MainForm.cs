@@ -33,9 +33,15 @@ namespace MyStockSystem
             this.Close();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MtlGalmetgilGuide_Click(object sender, EventArgs e)
         {
-            
+            this.Visible = false;
+
+            GalmetgilForm galmetgil = new GalmetgilForm();
+            galmetgil.Location = this.Location;
+            galmetgil.ShowDialog();
+
+            this.Close();
         }
     }
 }
