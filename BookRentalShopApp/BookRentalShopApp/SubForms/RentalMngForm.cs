@@ -1,18 +1,13 @@
 ﻿using MetroFramework;
-using MetroFramework.Controls;
 using MetroFramework.Forms;
 using MySql.Data.MySqlClient;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace BookRentalShopApp.SubForms
@@ -95,14 +90,19 @@ namespace BookRentalShopApp.SubForms
         {
             using (MySqlConnection conn = new MySqlConnection(Commons.CONNSTR))
             {
-                string strQuery = $"SELECT   Idx, " +
-                                   "         Names, " +
-                                   "         Levels," +
-                                   "         Addr, " +
-                                   "         Mobile, " +
-                                   "         Email " +
-                                   "  FROM membertbl " +
-                                   " ORDER BY Idx ASC";
+                string strQuery = $"SELECT r.idx AS '대여번호', " +
+                                   "        m.Names AS '대여회원', " +
+		                           "        b.Names AS '대여책제목', " +
+                                   "        b.ISBN, " +
+                                   "        r.rentalDate AS '대여일', " +
+                                   "        r.returnDate AS '반납일', " +
+                                   "        r.memberIdx, " +
+                                   "        r.bookIdx " +
+                                   "  FROM rentaltbl AS r " +
+                                   " INNER JOIN membertbl AS m " +
+                                   "    ON r.memberIdx = m.Idx " +
+                                   " INNER JOIN bookstbl AS b " +
+                                   "    ON r.bookIdx = b.Idx";
 
                 conn.Open();
                 MySqlDataAdapter adapter = new MySqlDataAdapter(strQuery, conn);
@@ -122,27 +122,36 @@ namespace BookRentalShopApp.SubForms
 
             column = GrdRentalTbl.Columns[0];
             column.Width = 60;
-            column.HeaderText = "번호";
+            column.HeaderText = "대여번호";
 
             column = GrdRentalTbl.Columns[1];
             column.Width = 80;
-            column.HeaderText = "이름";
+            column.HeaderText = "대여회원";
 
             column = GrdRentalTbl.Columns[2];
             column.Width = 60;
-            column.HeaderText = "레벨";
+            column.HeaderText = "대여책제목";
 
             column = GrdRentalTbl.Columns[3];
-            column.Width = 120;
-            column.HeaderText = "주소";
+            column.Width = 100;
+            column.HeaderText = "ISBN";
 
             column = GrdRentalTbl.Columns[4];
-            column.Width = 120;
-            column.HeaderText = "전화번호";
+            column.Width = 90;
+            //column.HeaderText = "대여일";
 
             column = GrdRentalTbl.Columns[5];
-            column.Width = 120;
-            column.HeaderText = "이메일";
+            column.Width = 90;
+            //column.HeaderText = "반납일";
+
+            column = GrdRentalTbl.Columns[3];
+            column.Visible = false;
+
+            column = GrdRentalTbl.Columns[6]; // memberIdx
+            column.Visible = false;
+            
+            column = GrdRentalTbl.Columns[7]; // booksIdx
+            column.Visible = false;
         }
 
         private void BtnNew_Click(object sender, EventArgs e)
@@ -181,78 +190,46 @@ namespace BookRentalShopApp.SubForms
 
                     if (myMode == BtnMode.UPDATE)
                     {
-                        cmd.CommandText = "UPDATE membertbl " +
-                                          "   SET Names       = @Names, " +
-                                          "       Levels      = @Levels, " +
-                                          "       Addr        = @Addr, " +
-                                          "       Mobile      = @Mobile, " +
-                                          "       Email       = @Email " +
-                                          " WHERE Idx = @Idx";
+                        cmd.CommandText = "UPDATE rentaltbl " +
+                                          "   SET " +
+                                          "         memberIdx  = memberIdx " +
+                                          "       , bookIdx    = @bookIdx " +
+                                          "       , rentalDate = @rentalDate " +
+                                          "       , returnDate = @returnDate " +
+                                          " WHERE   Idx        = @Idx";
                     }
                     else if (myMode == BtnMode.INSERT)
                     {
-                        cmd.CommandText = "INSERT INTO membertbl " +
-                                          "(    Names, " +
-                                          "     Levels, " +
-                                          "     Addr, " +
-                                          "     Mobile, " +
-                                          "     Email) " +
+                        cmd.CommandText = "INSERT INTO rentaltbl " +
+                                          "(    memberIdx, " +
+                                          "     bookIdx, " +
+                                          "     rentalDate, " +
+                                          "     returnDate) " +
                                           "VALUES " +
-                                          "     (@Names, " +
-                                          "     @Levels, " +
-                                          "     @Addr, " +
-                                          "     @Mobile, " +
-                                          "     @Email)";
+                                          "(    @memberIdx, " +
+                                          "     @bookIdx, " +
+                                          "     @rentalDate, " +
+                                          "     @returnDate)";
                     }
-                    else if (myMode == BtnMode.DELETE)
-                    {
-                        cmd.CommandText = "DELETE FROM membertbl " +
-                                          " WHERE Idx = @idx";
-                    }
-
-                    if (myMode == BtnMode.INSERT || myMode == BtnMode.UPDATE)
-                    {/*
-                        // 이름
-                        MySqlParameter paramNames = new MySqlParameter("@Names", MySqlDbType.VarChar, 45)
-                        {
-                            Value = TxtNames.Text.Trim()
-                        };
-                        cmd.Parameters.Add(paramNames);
-                        // 레벨
-                        MySqlParameter paramLevels = new MySqlParameter("@Levels", MySqlDbType.VarChar, 1)
-                        {
-                            Value = CboBook.SelectedItem//Value = CboLevel.SelectedValue
-                        };
-                        cmd.Parameters.Add(paramLevels);
-                        // 주소
-                        MySqlParameter paramAddr = new MySqlParameter("@Addr", MySqlDbType.VarChar, 100)
-                        {
-                            Value = TxtAddr.Text.Trim()
-                        };
-                        cmd.Parameters.Add(paramAddr);
-                        // 전화번호
-                        MySqlParameter paramMobile = new MySqlParameter("@Mobile", MySqlDbType.VarChar, 13)
-                        {
-                            Value = TxtMobile.Text.Trim()
-                        };
-                        cmd.Parameters.Add(paramMobile);
-                        // 이메일
-                        MySqlParameter paramEmail = new MySqlParameter("@Email", MySqlDbType.VarChar, 50)
-                        {
-                            Value = TxtEmail.Text.Trim()
-                        };
-                        cmd.Parameters.Add(paramEmail);*/
-                    }
-
-                    if (myMode == BtnMode.UPDATE || myMode == BtnMode.DELETE)
-                    {
-                        // Idx : PK, AI
-                        MySqlParameter paramIdx = new MySqlParameter("@Idx", MySqlDbType.Int32)
-                        {
-                            Value = TxtIdx.Text.Trim()
-                        };
-                        cmd.Parameters.Add(paramIdx);
-                    }
+                    // memberIdx
+                    MySqlParameter paramMemberIdx = new MySqlParameter("@memberIdx", MySqlDbType.Int32);
+                    paramMemberIdx.Value = CboMember.SelectedValue;
+                    cmd.Parameters.Add(paramMemberIdx);
+                    // bookIdx
+                    MySqlParameter paramBookIdx = new MySqlParameter("@bookIdx", MySqlDbType.Int32);
+                    paramBookIdx.Value = CboBook.SelectedValue;
+                    cmd.Parameters.Add(paramBookIdx);
+                    // rentalDate
+                    MySqlParameter paramRentalDate = new MySqlParameter("@rentalDate", MySqlDbType.Date);
+                    paramRentalDate.Value = DtpRentalDate.Value;
+                    cmd.Parameters.Add(paramRentalDate);
+                    // returnDate
+                    MySqlParameter paramReturnDate = new MySqlParameter("@returnDate", MySqlDbType.Date);
+                    if (myMode == BtnMode.INSERT)
+                        paramReturnDate.Value = null;
+                    else
+                        paramReturnDate.Value = DtpReturnDate.Value;
+                    cmd.Parameters.Add(paramReturnDate);
 
                     var result = cmd.ExecuteNonQuery();
 
@@ -263,11 +240,7 @@ namespace BookRentalShopApp.SubForms
                     }
                     else if(myMode == BtnMode.UPDATE)
                     {
-                        //MetroMessageBox.Show(this, $"일련번호 {TxtIdx.Text.Trim()}인 {TxtNames.Text.Trim()}이 수정되었습니다.", "회원 정보 수정");
-                    }
-                    else if(myMode == BtnMode.DELETE)
-                    {
-                        //MetroMessageBox.Show(this, $"일련번호 {TxtIdx.Text.Trim()}인 {TxtNames.Text.Trim()}이 삭제되었습니다.", "회원 삭제");
+                        MetroMessageBox.Show(this, $"일련번호 {TxtIdx.Text.Trim()}가 수정되었습니다.", "수정");
                     }
                 }
             }
@@ -314,24 +287,18 @@ namespace BookRentalShopApp.SubForms
         private void InitControls()
         {
             TxtIdx.Text = string.Empty;
-            CboMember.SelectedIndex = 0;
-            CboBook.SelectedIndex = 0;
+            TxtIdx.ReadOnly = true;
 
-            #region 콤보박스 연습
-            // 콤보박스 데이터바인딩
-            /*Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("선택", "00");
-            dic.Add("서울특별시", "11");
-            dic.Add("부산광역시", "21");
-            dic.Add("대구광역시", "22");
-            dic.Add("인천광역시", "23");
-            dic.Add("광주광역시", "24");
-            dic.Add("대전광역시", "25");
+            CboMember.SelectedIndex = CboBook.SelectedIndex = 0;
 
-            CboDivision.DataSource = new BindingSource(dic, null);
-            CboDivision.DisplayMember = "Key";
-            CboDivision.ValueMember = "Value";*/
-            #endregion
+
+            DtpRentalDate.CustomFormat = "yyyy-MM-dd";
+            DtpRentalDate.Format = DateTimePickerFormat.Custom;
+            DtpRentalDate.Value = DateTime.Now;
+
+            DtpReturnDate.Value = DateTime.Now;
+            DtpReturnDate.CustomFormat = " ";
+            DtpReturnDate.Format = DateTimePickerFormat.Custom;
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
@@ -343,23 +310,83 @@ namespace BookRentalShopApp.SubForms
             GrdRentalTbl.Focus();
         }
 
-        private void GrdDivTbl_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void GrdRentalTbl_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
             {
                 DataGridViewRow data = GrdRentalTbl.Rows[e.RowIndex];
 
                 // TODO : 클릭시 입력컨트롤에 데이터 할당
-                /*TxtIdx.Text = data.Cells[0].Value.ToString();
-                TxtNames.Text = data.Cells[1].Value.ToString();
-                CboBook.SelectedItem = data.Cells[2].Value; // CboLevel.SelectedValue = data.Cells[2].Value;
-                TxtAddr.Text = data.Cells[3].Value.ToString();
-                TxtMobile.Text = data.Cells[4].Value.ToString();
-                TxtEmail.Text = data.Cells[5].Value.ToString();*/
+                TxtIdx.Text = data.Cells[0].Value.ToString();
+                CboMember.SelectedValue = data.Cells[6].Value.ToString();
+                CboBook.SelectedValue = data.Cells[7].Value.ToString();
+                DtpRentalDate.Value = DateTime.Parse(data.Cells[4].Value.ToString());
+
+                if(!string.IsNullOrEmpty(data.Cells[5].Value.ToString()))
+                {
+                    DtpReturnDate.CustomFormat = "yyyy-MM-dd";
+                    DtpReturnDate.Format = DateTimePickerFormat.Custom;
+                    DtpReturnDate.Value = DateTime.Parse(data.Cells[5].Value.ToString());
+                }
+                else
+                {
+                    DtpReturnDate.Value = DateTime.Now;
+                    DtpReturnDate.CustomFormat = " ";
+                    DtpReturnDate.Format = DateTimePickerFormat.Custom;
+                }
 
                 myMode = BtnMode.UPDATE; // 수정모드로 변경
                 TxtIdx.ReadOnly = true;
             }
+        }
+
+        private void DtpReturnDate_ValueChanged(object sender, EventArgs e)
+        {
+            DtpReturnDate.CustomFormat = "yyyy-MM-dd";
+            DtpReturnDate.Format = DateTimePickerFormat.Custom;
+        }
+
+        private void BtnExcelExport_Click(object sender, EventArgs e) // NPOI -> Import 불러와서 넣기 Export 내보내기 가능
+        {
+            IWorkbook workbook = new XSSFWorkbook(); // 2003 이후 버전(.xlsx) //new HSSFWorkbook(); // 이전 버전(.xls)
+            ISheet sheet1 = workbook.CreateSheet("Sheet1");
+            sheet1.CreateRow(0).CreateCell(0).SetCellValue("Rental Book Data");
+            int x = 1;
+
+            DataSet ds = GrdRentalTbl.DataSource as DataSet;
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                IRow row = sheet1.CreateRow(i);
+                for (int j = 0; j < ds.Tables[0].Rows[0].ItemArray.Length; j++)
+                {
+                    if (j == 4 || j == 5)
+                    {
+                        /*if (string.IsNullOrEmpty(ds.Tables[0].Rows[i].ItemArray[j].ToString()))
+                            row.CreateCell(j).SetCellValue(ds.Tables[0].Rows[i].ItemArray[j].ToString());
+                        else
+                            row.CreateCell(j).SetCellValue(ds.Tables[0].Rows[i].ItemArray[j].ToString().Substring(0, 10));*/
+
+                        var value = string.IsNullOrEmpty(ds.Tables[0].Rows[i].ItemArray[j].ToString()) ?
+                            "" : ds.Tables[0].Rows[i].ItemArray[j].ToString().Substring(0, 10);
+                        row.CreateCell(j).SetCellValue(value);
+                    }
+                    else if (j > 5)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        row.CreateCell(j).SetCellValue(ds.Tables[0].Rows[i].ItemArray[j].ToString());
+                    }
+                }
+            }
+
+            FileStream file = File.Create(Environment.CurrentDirectory + $@"\export.xlsx"); // $@"\export.xls
+            workbook.Write(file);
+            file.Close();
+
+            MessageBox.Show("Export Done!!");
         }
     }
 }

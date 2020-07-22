@@ -35,6 +35,9 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.GrdRentalTbl = new MetroFramework.Controls.MetroGrid();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.DtpReturnDate = new MetroFramework.Controls.MetroDateTime();
+            this.DtpRentalDate = new MetroFramework.Controls.MetroDateTime();
+            this.CboMember = new MetroFramework.Controls.MetroComboBox();
             this.CboBook = new MetroFramework.Controls.MetroComboBox();
             this.BtnCancel = new MetroFramework.Controls.MetroButton();
             this.BtnSave = new MetroFramework.Controls.MetroButton();
@@ -46,9 +49,7 @@
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
-            this.CboMember = new MetroFramework.Controls.MetroComboBox();
-            this.DtpRentalDate = new MetroFramework.Controls.MetroDateTime();
-            this.DtpReturnDate = new MetroFramework.Controls.MetroDateTime();
+            this.BtnExcelExport = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -120,7 +121,7 @@
             this.GrdRentalTbl.Size = new System.Drawing.Size(374, 520);
             this.GrdRentalTbl.TabIndex = 0;
             this.GrdRentalTbl.UseCustomBackColor = true;
-            this.GrdRentalTbl.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GrdDivTbl_CellClick);
+            this.GrdRentalTbl.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GrdRentalTbl_CellClick);
             // 
             // groupBox1
             // 
@@ -131,6 +132,7 @@
             this.groupBox1.Controls.Add(this.CboBook);
             this.groupBox1.Controls.Add(this.BtnCancel);
             this.groupBox1.Controls.Add(this.BtnSave);
+            this.groupBox1.Controls.Add(this.BtnExcelExport);
             this.groupBox1.Controls.Add(this.BtnNew);
             this.groupBox1.Controls.Add(this.BtnDelete);
             this.groupBox1.Controls.Add(this.metroLabel4);
@@ -147,6 +149,33 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "상세";
+            // 
+            // DtpReturnDate
+            // 
+            this.DtpReturnDate.Location = new System.Drawing.Point(93, 227);
+            this.DtpReturnDate.MinimumSize = new System.Drawing.Size(0, 29);
+            this.DtpReturnDate.Name = "DtpReturnDate";
+            this.DtpReturnDate.Size = new System.Drawing.Size(280, 29);
+            this.DtpReturnDate.TabIndex = 4;
+            this.DtpReturnDate.ValueChanged += new System.EventHandler(this.DtpReturnDate_ValueChanged);
+            // 
+            // DtpRentalDate
+            // 
+            this.DtpRentalDate.Location = new System.Drawing.Point(93, 182);
+            this.DtpRentalDate.MinimumSize = new System.Drawing.Size(0, 29);
+            this.DtpRentalDate.Name = "DtpRentalDate";
+            this.DtpRentalDate.Size = new System.Drawing.Size(280, 29);
+            this.DtpRentalDate.TabIndex = 3;
+            // 
+            // CboMember
+            // 
+            this.CboMember.FormattingEnabled = true;
+            this.CboMember.ItemHeight = 23;
+            this.CboMember.Location = new System.Drawing.Point(93, 89);
+            this.CboMember.Name = "CboMember";
+            this.CboMember.Size = new System.Drawing.Size(280, 29);
+            this.CboMember.TabIndex = 1;
+            this.CboMember.UseSelectable = true;
             // 
             // CboBook
             // 
@@ -193,6 +222,7 @@
             // 
             // BtnDelete
             // 
+            this.BtnDelete.Enabled = false;
             this.BtnDelete.FontSize = MetroFramework.MetroButtonSize.Medium;
             this.BtnDelete.Location = new System.Drawing.Point(198, 284);
             this.BtnDelete.Name = "BtnDelete";
@@ -200,6 +230,7 @@
             this.BtnDelete.TabIndex = 8;
             this.BtnDelete.Text = "삭제";
             this.BtnDelete.UseSelectable = true;
+            this.BtnDelete.Visible = false;
             this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // metroLabel4
@@ -279,31 +310,16 @@
             this.metroLabel1.Text = "대여번호 : ";
             this.metroLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // CboMember
+            // BtnExcelExport
             // 
-            this.CboMember.FormattingEnabled = true;
-            this.CboMember.ItemHeight = 23;
-            this.CboMember.Location = new System.Drawing.Point(93, 89);
-            this.CboMember.Name = "CboMember";
-            this.CboMember.Size = new System.Drawing.Size(280, 29);
-            this.CboMember.TabIndex = 1;
-            this.CboMember.UseSelectable = true;
-            // 
-            // DtpRentalDate
-            // 
-            this.DtpRentalDate.Location = new System.Drawing.Point(93, 182);
-            this.DtpRentalDate.MinimumSize = new System.Drawing.Size(0, 29);
-            this.DtpRentalDate.Name = "DtpRentalDate";
-            this.DtpRentalDate.Size = new System.Drawing.Size(280, 29);
-            this.DtpRentalDate.TabIndex = 3;
-            // 
-            // DtpReturnDate
-            // 
-            this.DtpReturnDate.Location = new System.Drawing.Point(93, 227);
-            this.DtpReturnDate.MinimumSize = new System.Drawing.Size(0, 29);
-            this.DtpReturnDate.Name = "DtpReturnDate";
-            this.DtpReturnDate.Size = new System.Drawing.Size(280, 29);
-            this.DtpReturnDate.TabIndex = 4;
+            this.BtnExcelExport.FontSize = MetroFramework.MetroButtonSize.Medium;
+            this.BtnExcelExport.Location = new System.Drawing.Point(103, 478);
+            this.BtnExcelExport.Name = "BtnExcelExport";
+            this.BtnExcelExport.Size = new System.Drawing.Size(176, 36);
+            this.BtnExcelExport.TabIndex = 10;
+            this.BtnExcelExport.Text = "Excel로 내보내기";
+            this.BtnExcelExport.UseSelectable = true;
+            this.BtnExcelExport.Click += new System.EventHandler(this.BtnExcelExport_Click);
             // 
             // RentalMngForm
             // 
@@ -345,5 +361,6 @@
         private MetroFramework.Controls.MetroDateTime DtpReturnDate;
         private MetroFramework.Controls.MetroDateTime DtpRentalDate;
         private MetroFramework.Controls.MetroComboBox CboMember;
+        private MetroFramework.Controls.MetroButton BtnExcelExport;
     }
 }

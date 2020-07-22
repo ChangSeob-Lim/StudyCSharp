@@ -29,6 +29,8 @@ namespace BookRentalShopApp
         {
             LoginForm login = new LoginForm();
             login.ShowDialog();
+
+            LbUserID.Text = Commons.USERID;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

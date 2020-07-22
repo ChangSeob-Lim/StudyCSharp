@@ -68,7 +68,6 @@ namespace BookRentalShopApp.SubForms
                     else
                     {
                         resultID = reader["userID"] != null ? reader["userID"].ToString() : string.Empty;
-                        
                     }
                 }
             }
@@ -87,6 +86,7 @@ namespace BookRentalShopApp.SubForms
             else
             {
                 MetroMessageBox.Show(this, $"{resultID} 로그인 성공");
+                Commons.USERID = resultID; // 200720 12:30 추가
                 this.Close();
             }
         }

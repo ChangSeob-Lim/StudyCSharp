@@ -3,15 +3,7 @@ using MetroFramework.Forms;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BookRentalShopApp.SubForms
@@ -335,7 +327,6 @@ namespace BookRentalShopApp.SubForms
 
                 // 코드값 그대로 할당 B001, B002 등
                 CboDivision.SelectedValue = data.Cells[2].Value;
-
 
                 TxtNames.Text = data.Cells[4].Value.ToString();
 
