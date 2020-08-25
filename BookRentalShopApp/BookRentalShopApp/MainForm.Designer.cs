@@ -28,14 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.MnuMng = new System.Windows.Forms.ToolStripMenuItem();
             this.MnuItemCodeMng = new System.Windows.Forms.ToolStripMenuItem();
             this.MnuItemBooksMng = new System.Windows.Forms.ToolStripMenuItem();
             this.MnuItemRentalMng = new System.Windows.Forms.ToolStripMenuItem();
             this.MnuItemMemberMng = new System.Windows.Forms.ToolStripMenuItem();
-            this.MnuItemUserMng = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.MnuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.LbUserID = new System.Windows.Forms.Label();
@@ -44,7 +42,8 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.menuStrip1.BackColor = System.Drawing.Color.Silver;
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MnuMng});
             this.menuStrip1.Location = new System.Drawing.Point(20, 60);
@@ -60,7 +59,6 @@
             this.MnuItemBooksMng,
             this.MnuItemRentalMng,
             this.MnuItemMemberMng,
-            this.MnuItemUserMng,
             this.toolStripMenuItem2,
             this.MnuItemExit});
             this.MnuMng.Name = "MnuMng";
@@ -95,13 +93,6 @@
             this.MnuItemMemberMng.Text = "회원관리(&M)";
             this.MnuItemMemberMng.Click += new System.EventHandler(this.MnuItemMemberMng_Click);
             // 
-            // MnuItemUserMng
-            // 
-            this.MnuItemUserMng.Name = "MnuItemUserMng";
-            this.MnuItemUserMng.Size = new System.Drawing.Size(168, 22);
-            this.MnuItemUserMng.Text = "사용자관리(&U)";
-            this.MnuItemUserMng.Click += new System.EventHandler(this.MnuItemUserMng_Click);
-            // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
@@ -117,9 +108,11 @@
             // 
             // LbUserID
             // 
-            this.LbUserID.Location = new System.Drawing.Point(318, 26);
+            this.LbUserID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.LbUserID.AutoSize = true;
+            this.LbUserID.Location = new System.Drawing.Point(1050, 26);
             this.LbUserID.Name = "LbUserID";
-            this.LbUserID.Size = new System.Drawing.Size(222, 23);
+            this.LbUserID.Size = new System.Drawing.Size(0, 12);
             this.LbUserID.TabIndex = 3;
             this.LbUserID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -130,7 +123,6 @@
             this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.LbUserID);
             this.Controls.Add(this.menuStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(600, 400);
@@ -157,7 +149,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem MnuItemMemberMng;
         private System.Windows.Forms.ToolStripMenuItem MnuItemRentalMng;
-        private System.Windows.Forms.ToolStripMenuItem MnuItemUserMng;
         private System.Windows.Forms.Label LbUserID;
     }
 }

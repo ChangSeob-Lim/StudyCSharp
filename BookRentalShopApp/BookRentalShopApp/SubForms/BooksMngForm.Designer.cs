@@ -31,7 +31,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BooksMngForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.GrdBooksTbl = new MetroFramework.Controls.MetroGrid();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -75,13 +74,13 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer1.Size = new System.Drawing.Size(760, 520);
-            this.splitContainer1.SplitterDistance = 374;
+            this.splitContainer1.SplitterDistance = 373;
             this.splitContainer1.TabIndex = 0;
             // 
             // GrdBooksTbl
             // 
             this.GrdBooksTbl.AllowUserToResizeRows = false;
-            this.GrdBooksTbl.BackgroundColor = System.Drawing.Color.DarkGoldenrod;
+            this.GrdBooksTbl.BackgroundColor = System.Drawing.Color.Silver;
             this.GrdBooksTbl.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.GrdBooksTbl.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.GrdBooksTbl.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -118,17 +117,18 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.GrdBooksTbl.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.GrdBooksTbl.RowHeadersWidth = 51;
             this.GrdBooksTbl.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.GrdBooksTbl.RowTemplate.Height = 23;
             this.GrdBooksTbl.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.GrdBooksTbl.Size = new System.Drawing.Size(374, 520);
+            this.GrdBooksTbl.Size = new System.Drawing.Size(373, 520);
             this.GrdBooksTbl.TabIndex = 0;
             this.GrdBooksTbl.UseCustomBackColor = true;
             this.GrdBooksTbl.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GrdDivTbl_CellClick);
             // 
             // groupBox1
             // 
-            this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
+            this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.CboDivision);
             this.groupBox1.Controls.Add(this.DtpReleaseDate);
             this.groupBox1.Controls.Add(this.BtnCancel);
@@ -151,7 +151,7 @@
             this.groupBox1.ForeColor = System.Drawing.Color.Black;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(382, 520);
+            this.groupBox1.Size = new System.Drawing.Size(383, 520);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "상세";
@@ -444,9 +444,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 600);
             this.Controls.Add(this.splitContainer1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BooksMngForm";
-            this.Style = MetroFramework.MetroColorStyle.Orange;
             this.Text = "BooksMngForm";
             this.Load += new System.EventHandler(this.DivMngForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);

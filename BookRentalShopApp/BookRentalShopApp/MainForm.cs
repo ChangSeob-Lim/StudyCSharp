@@ -86,11 +86,6 @@ namespace BookRentalShopApp
             ShowFormControl(rental, "대여 관리");
         }
 
-        private void MnuItemUserMng_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void MnuItemExit_Click(object sender, EventArgs e)
         {
             Environment.Exit(0);

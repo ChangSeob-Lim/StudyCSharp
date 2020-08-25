@@ -157,7 +157,6 @@
             this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.Resizable = false;
-            this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "LOGIN";
             this.ResumeLayout(false);
 
